@@ -45,12 +45,7 @@ function attachTimer(node) {
     timer = null;
 
     // Release the wake lock when the timer is stopped
-    if (wakeLock !== null) {
-      wakeLock.release().then(() => {
-        wakeLock = null; // Clean up your reference
-        console.log("Wake Lock manually released");
-      });
-    }
+    releaseWakeLock();
   };
 
   // Reset everything
@@ -59,6 +54,9 @@ function attachTimer(node) {
     timer = null;
     seconds = 0;
     display.textContent = "00:00:00";
+
+    // Release the wake lock on reset
+    releaseWakeLock();
   };
 
   function updateTime() {
@@ -144,5 +142,14 @@ async function requestWakeLock() {
     });
   } catch (err) {
     console.error(err);
+  }
+}
+
+function releaseWakeLock() {
+  if (wakeLock !== null) {
+    wakeLock.release().then(() => {
+      wakeLock = null; // Clean up your reference
+      console.log("Wake Lock manually released");
+    });
   }
 }
