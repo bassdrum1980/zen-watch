@@ -36,6 +36,9 @@ function attachTimer(node) {
       timer = setInterval(updateTime, 1000);
       // Request a wake lock to keep the screen on during the meditation session
       requestWakeLock();
+
+      // Play a shorter and lower bell sound immediately when starting the timer
+      playMeditativeBell(98, 3);
     }
   };
 
@@ -70,12 +73,12 @@ function attachTimer(node) {
     let secs = (seconds % 60).toString().padStart(2, "0");
     display.innerText = `${hrs}:${mins}:${secs}`;
 
-    // Play a chime every minute
+    // Play a sound on every 1 and 5 minutes
     if (mins % 5 === 0 && secs === "00") {
       playMeditativeBell();
       // Every 5 minutes, play a more meditative bell sound
     } else if (secs === "00") {
-      // Every 1 mnute, play a shorter and lower bell sound
+      // Every 1 minute, play a shorter and lower bell sound
       playMeditativeBell(98, 3);
     }
   }
