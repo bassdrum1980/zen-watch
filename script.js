@@ -1,6 +1,18 @@
+// Keeping a reference to the wake lock so we can release it later if needed
+let wakeLock = null;
+
+// When the page loads, attach the timer functionality to the root node
 window.addEventListener("DOMContentLoaded", () => {
   const node = document.getElementById("root");
   attachTimer(node);
+});
+
+// Re-request the wake lock if the page becomes visible again after being hidden
+// (e.g., user switches tabs or locks/unlocks the screen)
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") {
+    requestWakeLock();
+  }
 });
 
 function attachTimer(node) {
@@ -22,6 +34,8 @@ function attachTimer(node) {
   startButton.onclick = () => {
     if (!timer) {
       timer = setInterval(updateTime, 1000);
+      // Request a wake lock to keep the screen on during the meditation session
+      requestWakeLock();
     }
   };
 
@@ -29,6 +43,14 @@ function attachTimer(node) {
   stopButton.onclick = () => {
     clearInterval(timer);
     timer = null;
+
+    // Release the wake lock when the timer is stopped
+    if (wakeLock !== null) {
+      wakeLock.release().then(() => {
+        wakeLock = null; // Clean up your reference
+        console.log("Wake Lock manually released");
+      });
+    }
   };
 
   // Reset everything
@@ -101,5 +123,26 @@ function attachTimer(node) {
       osc.start(now);
       osc.stop(now + duration + 1);
     });
+  }
+}
+
+async function requestWakeLock() {
+  // Only request if we don't already have an active lock
+  if (wakeLock !== null && !wakeLock.released) {
+    console.log("Wake lock is already active. Skipping request.");
+    return;
+  }
+
+  try {
+    wakeLock = await navigator.wakeLock.request("screen");
+    console.log("New Wake Lock acquired!");
+
+    // Reset the variable if the system releases it
+    wakeLock.addEventListener("release", () => {
+      wakeLock = null;
+      console.log("Wake Lock released.");
+    });
+  } catch (err) {
+    console.error(err);
   }
 }
