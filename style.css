@@ -8,19 +8,15 @@ main {
   background-color: #f0f0f0;
 }
 
+button:hover {
+  opacity: 0.8;
+}
+
 .timer {
   text-align: center;
 }
 
-.timer__time {
-  font-size: 5rem;
-  font-family: "Courier New", Courier, monospace;
-  color: #333;
-
-  margin-bottom: 1.25rem;
-}
-
-button {
+.timer button {
   font-size: 0.875rem;
   padding: 0.35rem 0.75rem;
   color: #fff;
@@ -29,4 +25,12 @@ button {
   border-radius: 0.25rem;
   cursor: pointer;
   text-transform: uppercase;
+}
+
+.timer__time {
+  font-size: 5rem;
+  font-family: "Courier New", Courier, monospace;
+  color: #333;
+
+  margin-bottom: 1.25rem;
 }

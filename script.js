@@ -15,6 +15,10 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
+/* 
+  Main function to attach timer 
+  functionality to the given DOM node
+*/
 function attachTimer(node) {
   const display = node.querySelector(".timer__time");
   const startButton = node.querySelector(".timer__start-button");
@@ -39,6 +43,9 @@ function attachTimer(node) {
 
       // Play a shorter and lower bell sound immediately when starting the timer
       playMeditativeBell(98, 3);
+
+      // Go Fullscreen for a more immersive experience
+      enterFullscreen();
     }
   };
 
@@ -62,6 +69,7 @@ function attachTimer(node) {
     releaseWakeLock();
   };
 
+  // Function to update the timer display every second
   function updateTime() {
     seconds++;
     let hrs = Math.floor(seconds / 3600)
@@ -83,6 +91,7 @@ function attachTimer(node) {
     }
   }
 
+  // Function to play a meditative bell sound using the Web Audio API
   function playMeditativeBell(
     fundamental = 130.81 /* C3 note - a deep, calming bell */,
     duration = 6 /* Long, lingering tail */,
@@ -127,6 +136,7 @@ function attachTimer(node) {
   }
 }
 
+// Function to request a wake lock to keep the screen on during meditation sessions
 async function requestWakeLock() {
   // Only request if we don't already have an active lock
   if (wakeLock !== null && !wakeLock.released) {
@@ -148,11 +158,55 @@ async function requestWakeLock() {
   }
 }
 
+// Function to manually release the wake lock when the timer is stopped or reset
 function releaseWakeLock() {
   if (wakeLock !== null) {
     wakeLock.release().then(() => {
       wakeLock = null; // Clean up your reference
       console.log("Wake Lock manually released");
     });
+  }
+}
+
+// Fullscreen function to enhance the meditation experience by hiding distractions
+function enterFullscreen() {
+  const elem = document.documentElement;
+
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.webkitRequestFullscreen) {
+    elem.webkitRequestFullscreen();
+  } else if (elem.mozRequestFullScreen) {
+    elem.mozRequestFullScreen();
+  } else if (elem.msRequestFullscreen) {
+    elem.msRequestFullscreen();
+  }
+
+  // Adding a class for CSS adjustments in fullscreen mode
+  elem.classList.add("fullscreen");
+
+  // Listen for changes to exit fullscreen and remove the class accordingly
+  elem.addEventListener("fullscreenchange", () => {
+    if (!document.fullscreenElement) {
+      // Remove the fullscreen class when exiting fullscreen mode
+      document.documentElement.classList.remove("fullscreen");
+    }
+  });
+}
+
+// Exit fullscreen
+function exitFullscreen() {
+  if (!document.fullscreenElement) {
+    return; // Not in fullscreen, no need to exit
+  }
+
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.webkitExitFullscreen) {
+    document.webkitExitFullscreen();
+  } else if (document.mozCancelFullScreen) {
+    document.mozCancelFullScreen();
+  } else if (document.msExitFullscreen) {
+    document.msExitFullscreen();
   }
 }
