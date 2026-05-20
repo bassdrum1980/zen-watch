@@ -6,11 +6,23 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Zen Timer</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <main id="root">
       <div class="timer">
-        <div class="timer__time"></div>
+        <div class="timer__time">
+          <span class="timer__hours timer__value">00</span>
+          <span class="timer__separator">:</span>
+          <span class="timer__minutes timer__value">00</span>
+          <span class="timer__separator">:</span>
+          <span class="timer__seconds timer__value">00</span>
+        </div>
         <button class="timer__start-button" autofocus z-index="1">Start</button>
         <button class="timer__stop-button">Stop</button>
         <button class="timer__reset-button">Reset</button>

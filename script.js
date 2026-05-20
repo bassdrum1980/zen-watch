@@ -20,7 +20,6 @@ document.addEventListener("visibilitychange", () => {
   functionality to the given DOM node
 */
 function attachTimer(node) {
-  const display = node.querySelector(".timer__time");
   const startButton = node.querySelector(".timer__start-button");
   const stopButton = node.querySelector(".timer__stop-button");
   const resetButton = node.querySelector(".timer__reset-button");
@@ -29,7 +28,7 @@ function attachTimer(node) {
   let seconds = 0;
 
   // Populate the display with the initial time
-  display.textContent = "00:00:00";
+  renderTime("00", "00", "00");
 
   // Set up the audio context
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -63,7 +62,7 @@ function attachTimer(node) {
     clearInterval(timer);
     timer = null;
     seconds = 0;
-    display.textContent = "00:00:00";
+    renderTime("00", "00", "00");
 
     // Release the wake lock on reset
     releaseWakeLock();
@@ -79,7 +78,7 @@ function attachTimer(node) {
       .toString()
       .padStart(2, "0");
     let secs = (seconds % 60).toString().padStart(2, "0");
-    display.innerText = `${hrs}:${mins}:${secs}`;
+    renderTime(hrs, mins, secs);
 
     // Play a sound on every 1 and 5 minutes
     if (mins % 5 === 0 && secs === "00") {
@@ -89,6 +88,16 @@ function attachTimer(node) {
       // Every 1 minute, play a shorter and lower bell sound
       playMeditativeBell(98, 3);
     }
+  }
+
+  function renderTime(hrs, mins, secs) {
+    const displayHours = node.querySelector(".timer__hours");
+    const displayMinutes = node.querySelector(".timer__minutes");
+    const displaySeconds = node.querySelector(".timer__seconds");
+
+    displayHours.textContent = hrs;
+    displayMinutes.textContent = mins;
+    displaySeconds.textContent = secs;
   }
 
   // Function to play a meditative bell sound using the Web Audio API
